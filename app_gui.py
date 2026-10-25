@@ -269,7 +269,20 @@ class MainGui(ctk.CTk):
             progress_color="#059669",
             command=self._on_toggle_auto_paste
         )
-        self.auto_paste_sw.pack(anchor="w", padx=12, pady=(0, 10))
+        self.auto_paste_sw.pack(anchor="w", padx=12, pady=(0, 6))
+
+        # Audio Sound Feedback Switch (Beep Blip On/Off)
+        self.sound_var = ctk.BooleanVar(value=self.config.get("sound_feedback", True))
+        self.sound_sw = ctk.CTkSwitch(
+            scan_card,
+            text="Efek Suara Audio / Beep Feedback Aplikasi (On/Off)",
+            variable=self.sound_var,
+            font=ctk.CTkFont(family="Segoe UI", size=10, weight="bold"),
+            text_color=self.c_text,
+            progress_color="#0284c7",
+            command=self._on_toggle_sound_feedback
+        )
+        self.sound_sw.pack(anchor="w", padx=12, pady=(0, 10))
 
         # --- RIGHT COLUMN: HUD Sizing & Opacity Controls ---
         hud_card = ctk.CTkFrame(right_col, fg_color="#0d121e", corner_radius=8, border_width=1, border_color=self.c_card_border)
@@ -982,11 +995,7 @@ class MainGui(ctk.CTk):
         self.groq_key_entry.configure(text_color=self.c_green)
         self.groq_key_status.configure(text="ACTIVE & PROTECTED", fg_color="#064e3b", text_color=self.c_green)
 
-        try:
-            import winsound
-            winsound.Beep(1400, 70)
-        except Exception:
-            pass
+        self.play_sound(1400, 70)
 
         messagebox.showinfo("Success", "Groq Cloud API Key berhasil diperbarui dan diproteksi!")
 
@@ -1168,11 +1177,7 @@ class MainGui(ctk.CTk):
             self.hud.update_shortcut_hints()
 
         self.log_message(f"[SHORTCUT] Recorded '{key_name}': {clean_combo.upper()} (Auto-Saved & Registered)")
-        try:
-            import winsound
-            winsound.Beep(1200, 60)
-        except Exception:
-            pass
+        self.play_sound(1200, 60)
 
     def _cancel_recording_shortcut(self):
         key_name = self._recording_key_name
@@ -1275,6 +1280,29 @@ class MainGui(ctk.CTk):
             self.log_message("[1-BUTTON MODE] Diaktifkan: Scan game akan langsung meng-auto-paste balasan Opsi #1 ke chat FiveM!")
         else:
             self.log_message("[1-BUTTON MODE] Dinonaktifkan: Pemain memilih opsi balasan secara manual (Ctrl+1, 2, 3).")
+
+    def _on_toggle_sound_feedback(self):
+        val = self.sound_var.get()
+        self.config.set("sound_feedback", val)
+        if val:
+            self.log_message("[AUDIO] Efek suara audio / blip diaktifkan.")
+            self.play_sound(1400, 70)
+        else:
+            self.log_message("[AUDIO] Efek suara audio / blip dinonaktifkan (Mode Senyap).")
+
+    def play_sound(self, freq=1200, duration=60):
+        if not self.config.get("sound_feedback", True):
+            return
+        try:
+            import winsound
+            def _beep():
+                try:
+                    winsound.Beep(freq, duration)
+                except Exception:
+                    pass
+            threading.Thread(target=_beep, daemon=True).start()
+        except Exception:
+            pass
 
     def _test_ocr_scan(self):
         if getattr(self, "_is_scanning", False):

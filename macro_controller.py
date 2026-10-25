@@ -58,7 +58,9 @@ def get_clipboard_text():
         time.sleep(0.02)
     return ""
 
-def play_sound(freq=1200, duration=60):
+def play_sound(freq=1200, duration=60, config=None):
+    if config and not config.get("sound_feedback", True):
+        return
     if winsound:
         def _beep():
             try:
@@ -77,6 +79,11 @@ class MacroController:
 
         self.last_options_en = []
         self.is_busy = False
+
+    def _play_sound(self, freq=1200, duration=60):
+        if not self.config.get("sound_feedback", True):
+            return
+        play_sound(freq, duration, config=self.config)
 
     def handle_outgoing_translation(self):
         """
@@ -125,7 +132,7 @@ class MacroController:
                     self.log("[AUTO-REPLACE] Input kosong / tidak ada teks yang diblock.")
                     if old_clipboard:
                         set_clipboard_text(old_clipboard)
-                    play_sound(600, 100)
+                    self._play_sound(600, 100)
                     return
 
                 # Step 2: Delete the blocked Indonesian text immediately
@@ -135,7 +142,7 @@ class MacroController:
                 self.log(f"[AUTO-REPLACE] Translating: '{input_text}' [{style} | {tone}]")
                 if self.hud:
                     self.hud.show_status_message(f"TRANSLATING [{style.upper()}]...")
-                play_sound(1100, 40)
+                self._play_sound(1100, 40)
 
                 # Step 3: Check local slang dictionary first, then AI
                 quick_res = self.slang.get_quick_translation(input_text, style)
@@ -156,7 +163,7 @@ class MacroController:
                     set_clipboard_text(final_text)
                     time.sleep(0.03)
                     keyboard.send("ctrl+v")
-                    play_sound(1400, 70)
+                    self._play_sound(1400, 70)
                     if self.hud:
                         self.hud.show_status_message(f"REPLACED: {final_text[:35]}...")
             except Exception as e:
@@ -166,7 +173,7 @@ class MacroController:
                     set_clipboard_text(input_text)
                     time.sleep(0.03)
                     keyboard.send("ctrl+v")
-                play_sound(400, 200)
+                self._play_sound(400, 200)
                 if self.hud:
                     self.hud.show_status_message("TRANSLATION ERROR - RESTORED")
             finally:
@@ -181,7 +188,7 @@ class MacroController:
         """
         if option_index < 0 or option_index >= len(self.last_options_en):
             self.log(f"[AI REPLY] Option {option_index + 1} not available.")
-            play_sound(500, 100)
+            self._play_sound(500, 100)
             return
 
         choice_text = self.last_options_en[option_index].strip()
@@ -193,7 +200,7 @@ class MacroController:
             set_clipboard_text(choice_text)
             time.sleep(0.04)
             keyboard.send("ctrl+v")
-            play_sound(1500, 70)
+            self._play_sound(1500, 70)
             if self.hud:
                 self.hud.show_status_message(f"REPLY #{option_index + 1} PASTED")
 
