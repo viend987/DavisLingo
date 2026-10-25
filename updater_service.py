@@ -7,7 +7,7 @@ import tempfile
 import subprocess
 import requests
 
-CURRENT_VERSION = "3.2.3"
+CURRENT_VERSION = "3.2.4"
 GITHUB_REPO = "viend987/DavisLingo"
 GITHUB_API_URL = f"https://api.github.com/repos/{GITHUB_REPO}/releases/latest"
 FALLBACK_API_URL = "https://davislingo.viend.my.id/api/version"

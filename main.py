@@ -68,13 +68,13 @@ def rebind_all_hotkeys(gui, macro, config):
     safe_add(hk.get("hotkey_ans2", "ctrl+2"), lambda: macro.handle_reply_selection(1), "Reply #2")
     safe_add(hk.get("hotkey_ans3", "ctrl+3"), lambda: macro.handle_reply_selection(2), "Reply #3")
 
-    # 4. Cycle Style, Slang, Tone
+    # 4. Cycle Style, Tone
     safe_add(hk.get("hotkey_cycle_style", "alt+1"), gui.cycle_style, "Cycle Style")
-    safe_add(hk.get("hotkey_cycle_slang", "alt+2"), gui.cycle_slang, "Cycle Slang")
-    safe_add(hk.get("hotkey_cycle_tone", "alt+3"), gui.cycle_tone, "Cycle Tone")
+    safe_add(hk.get("hotkey_cycle_tone", "alt+2"), gui.cycle_tone, "Cycle Tone")
 
-    # 5. Toggle Main Window
+    # 5. Toggle Main Window & Toggle HUD Overlay
     safe_add(hk.get("hotkey_toggle_window", "insert"), gui.toggle_window_visibility, "Toggle Window")
+    safe_add(hk.get("hotkey_toggle_hud", "f6"), gui.toggle_hud_visibility, "Toggle HUD")
 
     # 6. Scroll HUD Up / Down
     if gui.hud:

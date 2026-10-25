@@ -382,6 +382,7 @@ class MainGui(ctk.CTk):
         shortcuts_list = [
             ("hotkey_ocr", "1-Button: Scan, Terjemah & Buat Balasan AI:", hk.get("hotkey_ocr", "f4")),
             ("hotkey_clipboard", "Auto-Replace Ketikan (Block Teks -> Keybind -> Ganti ke English RP):", hk.get("hotkey_clipboard", "f5")),
+            ("hotkey_toggle_hud", "Sembunyikan / Tampilkan HUD Overlay (Toggle HUD):", hk.get("hotkey_toggle_hud", "f6")),
             ("hotkey_ans1", "Tempel Pilihan Balasan #1 ke Chat Game:", hk.get("hotkey_ans1", "ctrl+1")),
             ("hotkey_ans2", "Tempel Pilihan Balasan #2 ke Chat Game:", hk.get("hotkey_ans2", "ctrl+2")),
             ("hotkey_ans3", "Tempel Pilihan Balasan #3 ke Chat Game:", hk.get("hotkey_ans3", "ctrl+3")),
@@ -1236,6 +1237,7 @@ class MainGui(ctk.CTk):
         defaults = {
             "hotkey_ocr": "f4",
             "hotkey_clipboard": "f5",
+            "hotkey_toggle_hud": "f6",
             "hotkey_ans1": "ctrl+1",
             "hotkey_ans2": "ctrl+2",
             "hotkey_ans3": "ctrl+3",
@@ -1330,9 +1332,12 @@ class MainGui(ctk.CTk):
 
         threading.Thread(target=_worker, daemon=True).start()
 
-    def _toggle_hud(self):
+    def toggle_hud_visibility(self):
         if self.hud:
             self.hud.toggle_visibility()
+
+    def _toggle_hud(self):
+        self.toggle_hud_visibility()
 
     def _test_api_connection(self):
         def _worker():

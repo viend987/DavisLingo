@@ -60,13 +60,15 @@ Dilengkapi dengan **HUD Overlay tembus pandang (semi-transparent)** di atas laya
 | Aksi | Shortcut Default | Keterangan |
 | :--- | :--- | :--- |
 | **Scan Layar (OCR)** | `F4` | Memindai area chat game dan menampilkan 3 opsi jawaban di HUD |
-| **Auto-Replace Ketikan** | `F5` | Mengganti teks chat yang diblock langsung dengan terjemahan bahasa Inggris RP |
-| **Kirim Opsi 1** | `Ctrl + 1` | Memilih & menyalin opsi balasan 1 |
-| **Kirim Opsi 2** | `Ctrl + 2` | Memilih & menyalin opsi balasan 2 |
-| **Kirim Opsi 3** | `Ctrl + 3` | Memilih & menyalin opsi balasan 3 |
+| **Auto-Replace Ketikan** | `F5` | Mengganti teks chat yang diblok langsung dengan terjemahan bahasa Inggris RP |
+| **Toggle HUD Overlay** | `F6` | Menyembunyikan / menampilkan jendela HUD Overlay saat bermain game |
+| **Pilih Balasan 1** | `Ctrl + 1` | Memilih & menempelkan opsi balasan #1 ke chat game |
+| **Pilih Balasan 2** | `Ctrl + 2` | Memilih & menempelkan opsi balasan #2 ke chat game |
+| **Pilih Balasan 3** | `Ctrl + 3` | Memilih & menempelkan opsi balasan #3 ke chat game |
 | **Ganti Persona** | `Alt + 1` | Berpindah faksi/persona secara berurutan |
-| **Ganti Tone** | `Alt + 3` | Mengubah nada emosi (Santai, Tegas, dll) |
-| **Sembunyikan HUD** | `Insert` | *Toggle* tampilan HUD Overlay on/off |
+| **Ganti Tone** | `Alt + 2` | Mengubah nada emosi (Neutral, Angry, Casual, Respectful) |
+| **Buka/Tutup DavisLingo** | `Insert` | Membuka / menyembunyikan jendela utama aplikasi DavisLingo |
+| **Scroll HUD Up/Down** | `PgUp` / `PgDn` | Menggulir tampilan balasan HUD jika teks panjang |
 
 *Semua tombol shortcut di atas dapat dikustomisasi secara bebas melalui tab **Custom Keybinds** di aplikasi.*
 

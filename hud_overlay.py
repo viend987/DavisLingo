@@ -436,6 +436,7 @@ class HudOverlay:
             hk = self.config.get("hotkeys", {})
             k_ocr = hk.get("hotkey_ocr", "f4").upper()
             k_f5 = hk.get("hotkey_clipboard", "f5").upper()
+            k_hud = hk.get("hotkey_toggle_hud", "f6").upper()
             k_ans1 = hk.get("hotkey_ans1", "ctrl+1").upper()
             k_ans2 = hk.get("hotkey_ans2", "ctrl+2").upper()
             k_ans3 = hk.get("hotkey_ans3", "ctrl+3").upper()
@@ -448,8 +449,8 @@ class HudOverlay:
                 if idx < len(keys):
                     badge.config(text=f"OPTION {idx+1} • {keys[idx]}")
 
-            self.toast_lbl.config(text=f"READY ({k_ocr}: Scan Chat | {k_f5}: Auto-Replace)")
-            self.footer_hint.config(text=f"Scroll: {hk.get('hotkey_scroll_up','PgUp').upper()} / {hk.get('hotkey_scroll_down','PgDn').upper()}")
+            self.toast_lbl.config(text=f"READY ({k_ocr}: Scan | {k_f5}: Replace | {k_hud}: Hide HUD)")
+            self.footer_hint.config(text=f"HUD: {k_hud} | Scroll: {hk.get('hotkey_scroll_up','PgUp').upper()}/{hk.get('hotkey_scroll_down','PgDn').upper()}")
         self.root.after(0, _update)
 
     def update_profile(self, style, *args, **kwargs):
@@ -520,16 +521,30 @@ class HudOverlay:
         self.root.after(0, _update)
 
     def toggle_visibility(self):
-        if self.window.winfo_viewable():
-            self.window.withdraw()
-            self.config.set("osd_enabled", False)
-        else:
-            self.window.deiconify()
-            self.config.set("osd_enabled", True)
+        def _toggle():
+            if not self.window or not self.window.winfo_exists():
+                return
+            if self.window.winfo_viewable():
+                self.window.withdraw()
+                self.config.set("osd_enabled", False)
+                if hasattr(self.root, "log_message"):
+                    self.root.log_message("[HUD] Overlay disembunyikan.")
+            else:
+                self.window.deiconify()
+                self.window.lift()
+                self.config.set("osd_enabled", True)
+                if hasattr(self.root, "log_message"):
+                    self.root.log_message("[HUD] Overlay ditampilkan.")
+        self.root.after(0, _toggle)
 
     def set_visible(self, visible):
-        if visible:
-            self.window.deiconify()
-        else:
-            self.window.withdraw()
-        self.config.set("osd_enabled", visible)
+        def _set():
+            if not self.window or not self.window.winfo_exists():
+                return
+            if visible:
+                self.window.deiconify()
+                self.window.lift()
+            else:
+                self.window.withdraw()
+            self.config.set("osd_enabled", visible)
+        self.root.after(0, _set)

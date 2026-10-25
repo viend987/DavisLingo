@@ -29,6 +29,7 @@ DEFAULT_CONFIG = {
     "hotkeys": {
         "hotkey_ocr": "f4",
         "hotkey_clipboard": "f5",
+        "hotkey_toggle_hud": "f6",
         "hotkey_ans1": "ctrl+1",
         "hotkey_ans2": "ctrl+2",
         "hotkey_ans3": "ctrl+3",
