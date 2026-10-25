@@ -1,0 +1,37 @@
+# UTF-8
+#
+# Windows PE Version Resource for DavisLingo
+#
+VSVersionInfo(
+  ffi=FixedFileInfo(
+    filevers=(3, 2, 0, 0),
+    prodvers=(3, 2, 0, 0),
+    mask=0x3f,
+    flags=0x0,
+    OS=0x40004,
+    fileType=0x1,
+    subtype=0x0,
+    date=(0, 0)
+  ),
+  kids=[
+    StringFileInfo(
+      [
+        StringTable(
+          '040904B0',
+          [
+            StringStruct('CompanyName', 'ViendLab'),
+            StringStruct('FileDescription', 'DavisLingo - Roleplay Assistant'),
+            StringStruct('FileVersion', '3.2.0.0'),
+            StringStruct('InternalName', 'DavisLingo'),
+            StringStruct('LegalCopyright', 'Copyright (c) 2026 Viend (ViendLab). Made by JGVRP Player.'),
+            StringStruct('OriginalFilename', 'DavisLingo.exe'),
+            StringStruct('ProductName', 'DavisLingo'),
+            StringStruct('ProductVersion', '3.2.0.0'),
+            StringStruct('Comments', 'Made by JGVRP Player for GTA V Roleplay.')
+          ]
+        )
+      ]
+    ),
+    VarFileInfo([VarStruct('Translation', [1033, 1200])])
+  ]
+)

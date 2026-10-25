@@ -1,0 +1,42 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# PyInstaller / Build outputs
+build/
+dist/
+
+# Local sensitive configuration (Contains private API keys & custom screen coordinates)
+config.json
+
+# Archives & Temporary files
+*.zip
+*.tar.gz
+*.log
+
+# Editor & OS files
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# AI tooling, assistants, scaffolding & instruction files
+agent.md
+agent*.md
+agents.md
+agents/
+.agent/
+.agents/
+.gemini/
+.claude/
+.kiro/
+.cursor/
+*gemini*
+*kiro*
+*kilo*
+*claude*
+CLAUDE.md
+AGENT.md
+AGENTS.md

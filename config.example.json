@@ -1,0 +1,36 @@
+{
+    "ai_provider": "groq",
+    "groq_api_key": "",
+    "groq_model": "qwen/qwen3.8-27b",
+    "current_style": "LSFD / Fire & Medic",
+    "emotion_tone": "Neutral",
+    "auto_paste_top_reply": false,
+    "bbox": {
+        "left": 265,
+        "top": 233,
+        "width": 645,
+        "height": 73
+    },
+    "osd_bbox": {
+        "left": 1091,
+        "top": 122,
+        "width": 320,
+        "height": 560
+    },
+    "osd_enabled": true,
+    "osd_duration": 15,
+    "osd_alpha": 0.9,
+    "sound_feedback": true,
+    "hotkeys": {
+        "hotkey_ocr": "f4",
+        "hotkey_clipboard": "f5",
+        "hotkey_ans1": "ctrl+1",
+        "hotkey_ans2": "ctrl+2",
+        "hotkey_ans3": "ctrl+3",
+        "hotkey_cycle_style": "alt+1",
+        "hotkey_cycle_tone": "alt+3",
+        "hotkey_toggle_window": "insert",
+        "hotkey_scroll_up": "page up",
+        "hotkey_scroll_down": "page down"
+    }
+}
