@@ -857,7 +857,7 @@ class MainGui(ctk.CTk):
 
         desc_lbl = ctk.CTkLabel(
             prog_win,
-            text="Mengunduh paket instalasi dari server Google Drive...",
+            text="Mengunduh paket instalasi pembaruan...",
             font=ctk.CTkFont(size=11),
             text_color="#94a3b8"
         )
