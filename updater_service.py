@@ -7,7 +7,7 @@ import tempfile
 import subprocess
 import requests
 
-CURRENT_VERSION = "3.2.2"
+CURRENT_VERSION = "3.2.3"
 GITHUB_REPO = "viend987/DavisLingo"
 GITHUB_API_URL = f"https://api.github.com/repos/{GITHUB_REPO}/releases/latest"
 FALLBACK_API_URL = "https://davislingo.viend.my.id/api/version"
@@ -188,7 +188,7 @@ if errorlevel 1 (
     powershell -NoProfile -Command "Expand-Archive -Path '{zip_path}' -DestinationPath '%EXTRACT_DIR%' -Force"
 )
 
-echo [3/4] Memasang file pembaruan (Konfigurasi & API key Anda tetap aman)...
+echo [3/4] Memasang file pembaruan (Konfigurasi dan API key Anda tetap aman)...
 set "SOURCE_DIR=%EXTRACT_DIR%"
 if exist "%EXTRACT_DIR%\\DavisLingo" set "SOURCE_DIR=%EXTRACT_DIR%\\DavisLingo"
 
