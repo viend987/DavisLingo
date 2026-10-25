@@ -526,32 +526,12 @@ class MainGui(ctk.CTk):
         )
         self.update_status_badge.pack(side="right")
 
-        up_content = ctk.CTkFrame(update_card, fg_color="transparent")
-        up_content.pack(fill="x", padx=12, pady=(2, 10))
+        # Row 1: Status Info (Left) & Action Buttons (Right) - Buttons always have reserved space on right
+        up_action_row = ctk.CTkFrame(update_card, fg_color="transparent")
+        up_action_row.pack(fill="x", padx=12, pady=(4, 4))
 
-        up_text_box = ctk.CTkFrame(up_content, fg_color="transparent")
-        up_text_box.pack(side="left", fill="both", expand=True)
-
-        self.update_info_lbl = ctk.CTkLabel(
-            up_text_box,
-            text=f"Versi Aktif: v{self.updater.current_version} | Status: Sistem termutakhir.",
-            font=ctk.CTkFont(family="Consolas", size=10),
-            text_color=self.c_text,
-            anchor="w"
-        )
-        self.update_info_lbl.pack(fill="x")
-
-        self.update_changelog_lbl = ctk.CTkLabel(
-            up_text_box,
-            text="Siap digunakan untuk GTA V Roleplay FiveM.",
-            font=ctk.CTkFont(family="Segoe UI", size=9, slant="italic"),
-            text_color=self.c_dim,
-            anchor="w"
-        )
-        self.update_changelog_lbl.pack(fill="x")
-
-        up_btn_box = ctk.CTkFrame(up_content, fg_color="transparent")
-        up_btn_box.pack(side="right")
+        up_btn_box = ctk.CTkFrame(up_action_row, fg_color="transparent")
+        up_btn_box.pack(side="right", padx=(8, 0))
 
         self.check_update_btn = ctk.CTkButton(
             up_btn_box,
@@ -575,7 +555,41 @@ class MainGui(ctk.CTk):
             height=30,
             command=self._start_update_process
         )
-        # Not packed initially, packed when update is detected!
+        # Not packed initially, packed into up_btn_box when update is detected!
+
+        self.update_info_lbl = ctk.CTkLabel(
+            up_action_row,
+            text=f"Versi Aktif: v{self.updater.current_version} | Status: Sistem termutakhir.",
+            font=ctk.CTkFont(family="Consolas", size=10),
+            text_color=self.c_text,
+            anchor="w"
+        )
+        self.update_info_lbl.pack(side="left", fill="x", expand=True)
+
+        # Row 2: Dedicated Full-Width Changelog Display Box (Spans full width, will NEVER collide with buttons!)
+        cl_header_row = ctk.CTkFrame(update_card, fg_color="transparent")
+        cl_header_row.pack(fill="x", padx=12, pady=(2, 0))
+        ctk.CTkLabel(
+            cl_header_row,
+            text="Release Notes / Changelog:",
+            font=ctk.CTkFont(family="Segoe UI", size=9, weight="bold"),
+            text_color="#94a3b8"
+        ).pack(side="left")
+
+        self.update_changelog_box = ctk.CTkTextbox(
+            update_card,
+            height=58,
+            fg_color="#080c14",
+            text_color=self.c_dim,
+            font=ctk.CTkFont(family="Segoe UI", size=10),
+            border_width=1,
+            border_color="#1a2234",
+            corner_radius=6,
+            wrap="word",
+            activate_scrollbars=True
+        )
+        self.update_changelog_box.pack(fill="x", padx=12, pady=(2, 10))
+        self._set_update_changelog("Siap digunakan untuk GTA V Roleplay FiveM.")
 
         # --- GROQ API KEY CONFIGURATION CARD (ANTI-COPY PROTECTED) ---
         self.MASKED_KEY_DUMMY = "*" * 38
@@ -749,9 +763,19 @@ class MainGui(ctk.CTk):
                 self.after(0, lambda: self._apply_update_detected(info, is_silent=True))
         threading.Thread(target=_bg, daemon=True).start()
 
+    def _set_update_changelog(self, text, is_highlight=False):
+        if hasattr(self, "update_changelog_box") and self.update_changelog_box:
+            self.update_changelog_box.configure(state="normal")
+            self.update_changelog_box.delete("1.0", "end")
+            self.update_changelog_box.insert("1.0", str(text).strip())
+            color = self.c_text if is_highlight else self.c_dim
+            self.update_changelog_box.configure(text_color=color)
+            self.update_changelog_box.configure(state="disabled")
+
     def _manual_check_update(self):
         self.check_update_btn.configure(state="disabled", text="Memeriksa...")
-        self.update_info_lbl.configure(text="Menghubungi server Cloudflare untuk cek versi...")
+        self.update_info_lbl.configure(text="Menghubungi server update untuk cek rilis terbaru...")
+        self._set_update_changelog("Memeriksa pembaruan rilis...", is_highlight=False)
 
         def _bg():
             has_update, info = self.updater.check_for_updates()
@@ -769,10 +793,7 @@ class MainGui(ctk.CTk):
                         text=f"Versi Aktif: v{self.updater.current_version} | Status: Aplikasi Anda sudah paling baru!",
                         text_color=self.c_green
                     )
-                    self.update_changelog_lbl.configure(
-                        text="Tidak ada pembaruan baru saat ini.",
-                        text_color=self.c_dim
-                    )
+                    self._set_update_changelog("Tidak ada pembaruan baru saat ini. Anda menggunakan versi terbaru.", is_highlight=False)
                     self.log_message(f"[UPDATER] DavisLingo v{self.updater.current_version} sudah menggunakan versi terbaru.")
             self.after(0, _ui)
         threading.Thread(target=_bg, daemon=True).start()
@@ -792,10 +813,7 @@ class MainGui(ctk.CTk):
             text=f"Versi Baru: v{lat_v} (Rilis: {rel_date}) - Siap diunduh!",
             text_color="#fde047"
         )
-        self.update_changelog_lbl.configure(
-            text=f"Changelog: {changelog}",
-            text_color=self.c_text
-        )
+        self._set_update_changelog(changelog, is_highlight=True)
 
         if not self.install_update_btn.winfo_ismapped():
             self.install_update_btn.pack(side="left")
