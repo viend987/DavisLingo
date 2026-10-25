@@ -60,7 +60,7 @@ Dilengkapi dengan **HUD Overlay tembus pandang (semi-transparent)** di atas laya
 | Aksi | Shortcut Default | Keterangan |
 | :--- | :--- | :--- |
 | **Scan Layar (OCR)** | `F4` | Memindai area chat game dan menampilkan 3 opsi jawaban di HUD |
-| **Terjemahkan Teks** | `F5` | Menerjemahkan teks dari clipboard sesuai persona aktif |
+| **Auto-Replace Ketikan** | `F5` | Mengganti teks chat yang diblock langsung dengan terjemahan bahasa Inggris RP |
 | **Kirim Opsi 1** | `Ctrl + 1` | Memilih & menyalin opsi balasan 1 |
 | **Kirim Opsi 2** | `Ctrl + 2` | Memilih & menyalin opsi balasan 2 |
 | **Kirim Opsi 3** | `Ctrl + 3` | Memilih & menyalin opsi balasan 3 |

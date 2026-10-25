@@ -80,44 +80,68 @@ class MacroController:
 
     def handle_outgoing_translation(self):
         """
-        Triggered by F5:
-        1. Select all & copy from active game chat (Ctrl+A -> Ctrl+C).
-        2. Read copied text.
-        3. Translate with selected RP Style, Slang Level & Tone.
-        4. Auto-paste (Ctrl+V) translation into game chat.
+        Auto-Translate & In-Place Text Replacement:
+        1. Capture currently blocked/highlighted text (Ctrl+C).
+           Fallback to Ctrl+A -> Ctrl+C if user hasn't blocked anything yet.
+        2. Immediately delete the blocked text (Backspace) for instant feedback.
+        3. Translate Indonesian text into authentic GTA V Roleplay English (Groq LPU),
+           strictly avoiding forced numerical codes for government factions (PD/SD/FD).
+        4. Auto-paste (Ctrl+V) English translation directly into game chat.
+        5. If an error occurs, restore original text so user never loses their typing.
         """
         if self.is_busy:
             return
         
         def _worker():
             self.is_busy = True
+            input_text = ""
             try:
+                # Slight pause to ensure user's hotkey release doesn't conflict
+                time.sleep(0.06)
+
                 style = self.config.get("current_style", "LSFD / Fire & Medic")
                 tone = self.config.get("emotion_tone", "Neutral")
                 ignore = self.slang.get_ignore_words_str()
 
-                # Step 1: Keystroke simulation Ctrl+A -> Ctrl+C
-                keyboard.send("ctrl+a")
-                time.sleep(0.04)
-                keyboard.send("ctrl+c")
-                time.sleep(0.05)
+                # Step 1: Detect if text is already blocked/selected by user
+                old_clipboard = get_clipboard_text()
+                set_clipboard_text("")
+                time.sleep(0.02)
 
-                # Step 2: Read clipboard
+                # Attempt copying selected text
+                keyboard.send("ctrl+c")
+                time.sleep(0.04)
                 input_text = get_clipboard_text().strip()
+
+                # If nothing was selected beforehand, fallback to select all (Ctrl+A -> Ctrl+C)
                 if not input_text:
-                    self.log("[F5 OUTGOING] Input empty or no text selected.")
+                    keyboard.send("ctrl+a")
+                    time.sleep(0.03)
+                    keyboard.send("ctrl+c")
+                    time.sleep(0.04)
+                    input_text = get_clipboard_text().strip()
+
+                if not input_text:
+                    self.log("[AUTO-REPLACE] Input kosong / tidak ada teks yang diblock.")
+                    if old_clipboard:
+                        set_clipboard_text(old_clipboard)
                     play_sound(600, 100)
                     return
 
-                self.log(f"[F5 OUTGOING] Processing: '{input_text}' [{style} | {tone}]")
+                # Step 2: Delete the blocked Indonesian text immediately
+                keyboard.send("backspace")
+                time.sleep(0.02)
+
+                self.log(f"[AUTO-REPLACE] Translating: '{input_text}' [{style} | {tone}]")
                 if self.hud:
                     self.hud.show_status_message(f"TRANSLATING [{style.upper()}]...")
+                play_sound(1100, 40)
 
-                # Step 3: Check local slang dictionary first
+                # Step 3: Check local slang dictionary first, then AI
                 quick_res = self.slang.get_quick_translation(input_text, style)
                 if quick_res:
                     final_text = quick_res
-                    self.log(f"[F5 OUTGOING] Dictionary Match: '{final_text}'")
+                    self.log(f"[AUTO-REPLACE] Dictionary Match: '{final_text}'")
                 else:
                     final_text = self.ai.translate_outgoing(
                         input_text,
@@ -125,19 +149,26 @@ class MacroController:
                         tone=tone,
                         ignore_words=ignore
                     )
-                    self.log(f"[F5 OUTGOING] AI Translated: '{final_text}'")
+                    self.log(f"[AUTO-REPLACE] AI Translated: '{final_text}'")
 
+                # Step 4: Write translation to clipboard & paste into chat
                 if final_text:
-                    # Step 4: Write translation to clipboard & paste
                     set_clipboard_text(final_text)
                     time.sleep(0.03)
                     keyboard.send("ctrl+v")
-                    play_sound(1300, 80)
+                    play_sound(1400, 70)
                     if self.hud:
-                        self.hud.show_status_message(f"PASTED: {final_text[:30]}...")
+                        self.hud.show_status_message(f"REPLACED: {final_text[:35]}...")
             except Exception as e:
-                self.log(f"[F5 OUTGOING ERROR] {e}")
+                self.log(f"[AUTO-REPLACE ERROR] {e}")
+                # Restore original text so user never loses what they typed
+                if input_text:
+                    set_clipboard_text(input_text)
+                    time.sleep(0.03)
+                    keyboard.send("ctrl+v")
                 play_sound(400, 200)
+                if self.hud:
+                    self.hud.show_status_message("TRANSLATION ERROR - RESTORED")
             finally:
                 self.is_busy = False
 

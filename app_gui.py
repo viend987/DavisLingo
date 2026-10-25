@@ -381,7 +381,7 @@ class MainGui(ctk.CTk):
 
         shortcuts_list = [
             ("hotkey_ocr", "1-Button: Scan, Terjemah & Buat Balasan AI:", hk.get("hotkey_ocr", "f4")),
-            ("hotkey_clipboard", "Terjemahkan Ketikan Sendiri (Indo -> English Slang):", hk.get("hotkey_clipboard", "f5")),
+            ("hotkey_clipboard", "Auto-Replace Ketikan (Block Teks -> Keybind -> Ganti ke English RP):", hk.get("hotkey_clipboard", "f5")),
             ("hotkey_ans1", "Tempel Pilihan Balasan #1 ke Chat Game:", hk.get("hotkey_ans1", "ctrl+1")),
             ("hotkey_ans2", "Tempel Pilihan Balasan #2 ke Chat Game:", hk.get("hotkey_ans2", "ctrl+2")),
             ("hotkey_ans3", "Tempel Pilihan Balasan #3 ke Chat Game:", hk.get("hotkey_ans3", "ctrl+3")),
@@ -401,7 +401,7 @@ class MainGui(ctk.CTk):
                 text=label_text,
                 font=ctk.CTkFont(size=11, weight="bold"),
                 text_color=self.c_text,
-                width=240,
+                width=370,
                 anchor="w"
             )
             lbl.pack(side="left", padx=10, pady=4)

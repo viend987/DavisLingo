@@ -448,7 +448,7 @@ class HudOverlay:
                 if idx < len(keys):
                     badge.config(text=f"OPTION {idx+1} • {keys[idx]}")
 
-            self.toast_lbl.config(text=f"READY ({k_ocr}: Scan & Balas | {k_f5}: Terjemahkan)")
+            self.toast_lbl.config(text=f"READY ({k_ocr}: Scan Chat | {k_f5}: Auto-Replace)")
             self.footer_hint.config(text=f"Scroll: {hk.get('hotkey_scroll_up','PgUp').upper()} / {hk.get('hotkey_scroll_down','PgDn').upper()}")
         self.root.after(0, _update)
 
