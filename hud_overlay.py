@@ -38,7 +38,8 @@ class HudOverlay:
         self._build_ui()
 
         # If OSD disabled in config, hide
-        if not self.config.get("osd_enabled", True):
+        self.is_visible = bool(self.config.get("osd_enabled", True))
+        if not self.is_visible:
             self.window.withdraw()
 
     def _build_ui(self):
@@ -520,31 +521,61 @@ class HudOverlay:
             self._bind_mousewheel(self.scrollable_frame)
         self.root.after(0, _update)
 
+    def _force_bring_to_front(self):
+        try:
+            import ctypes
+            user32 = ctypes.windll.user32
+            hwnd = user32.GetParent(self.window.winfo_id()) or self.window.winfo_id()
+            # HWND_TOPMOST = -1, SWP_NOMOVE = 0x0002, SWP_NOSIZE = 0x0001, SWP_SHOWWINDOW = 0x0040, SWP_NOACTIVATE = 0x0010
+            user32.SetWindowPos(hwnd, -1, 0, 0, 0, 0, 0x0002 | 0x0001 | 0x0040 | 0x0010)
+        except Exception:
+            pass
+
     def toggle_visibility(self):
+        # Debounce to prevent rapid double-clicks or key repeats from desyncing toggle
+        now = time.time()
+        if now - getattr(self, "_last_toggle_time", 0) < 0.2:
+            return
+        self._last_toggle_time = now
+
         def _toggle():
             if not self.window or not self.window.winfo_exists():
                 return
-            if self.window.winfo_viewable():
+
+            current_state = self.window.state()
+            is_shown = (current_state != "withdrawn") and getattr(self, "is_visible", True)
+
+            if is_shown:
+                self.is_visible = False
                 self.window.withdraw()
                 self.config.set("osd_enabled", False)
                 if hasattr(self.root, "log_message"):
                     self.root.log_message("[HUD] Overlay disembunyikan.")
             else:
+                self.is_visible = True
                 self.window.deiconify()
+                self.window.overrideredirect(True)
+                self.window.attributes("-topmost", True)
                 self.window.lift()
+                self._force_bring_to_front()
                 self.config.set("osd_enabled", True)
                 if hasattr(self.root, "log_message"):
                     self.root.log_message("[HUD] Overlay ditampilkan.")
+
         self.root.after(0, _toggle)
 
     def set_visible(self, visible):
+        self.is_visible = bool(visible)
         def _set():
             if not self.window or not self.window.winfo_exists():
                 return
-            if visible:
+            if self.is_visible:
                 self.window.deiconify()
+                self.window.overrideredirect(True)
+                self.window.attributes("-topmost", True)
                 self.window.lift()
+                self._force_bring_to_front()
             else:
                 self.window.withdraw()
-            self.config.set("osd_enabled", visible)
+            self.config.set("osd_enabled", self.is_visible)
         self.root.after(0, _set)

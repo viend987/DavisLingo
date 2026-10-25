@@ -1363,6 +1363,7 @@ class MainGui(ctk.CTk):
     def toggle_hud_visibility(self):
         if self.hud:
             self.hud.toggle_visibility()
+            self.play_sound(1200, 40)
 
     def _toggle_hud(self):
         self.toggle_hud_visibility()
