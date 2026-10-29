@@ -158,6 +158,10 @@ class MacroController:
                     )
                     self.log(f"[AUTO-REPLACE] AI Translated: '{final_text}'")
 
+                # Sanitize any redundant radio affirmations (e.g. '10-4 copy Officer' -> '10-4, Officer')
+                if final_text:
+                    final_text = self.ai.sanitize_radio_comms(final_text)
+
                 # Step 4: Write translation to clipboard & paste into chat
                 if final_text:
                     set_clipboard_text(final_text)
@@ -175,7 +179,10 @@ class MacroController:
                     keyboard.send("ctrl+v")
                 self._play_sound(400, 200)
                 if self.hud:
-                    self.hud.show_status_message("TRANSLATION ERROR - RESTORED")
+                    if "Groq API Key belum terpasang" in str(e):
+                        self.hud.show_status_message("GROQ API KEY BELUM DIISI (TAB SYSTEM)")
+                    else:
+                        self.hud.show_status_message("TRANSLATION ERROR - RESTORED")
             finally:
                 self.is_busy = False
 

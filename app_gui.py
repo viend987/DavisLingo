@@ -3,6 +3,7 @@ import tkinter as tk
 from tkinter import messagebox
 import threading
 import time
+import webbrowser
 
 class MainGui(ctk.CTk):
     def __init__(self, config_manager, slang_engine, ai_service, ocr_service, macro_controller, hud_overlay, rebind_hotkeys_callback=None):
@@ -716,6 +717,29 @@ class MainGui(ctk.CTk):
             command=self._cancel_groq_key
         )
         cancel_btn.pack(side="left")
+
+        # Hint & Direct link to get free Groq API key
+        hint_row = ctk.CTkFrame(key_card, fg_color="transparent")
+        hint_row.pack(fill="x", padx=12, pady=(0, 8))
+
+        ctk.CTkLabel(
+            hint_row,
+            text="Belum punya API Key? Dapatkan gratis & instan di console.groq.com/keys",
+            font=ctk.CTkFont(family="Segoe UI", size=10),
+            text_color=self.c_dim
+        ).pack(side="left")
+
+        ctk.CTkButton(
+            hint_row,
+            text="Dapatkan Key Gratis",
+            font=ctk.CTkFont(family="Segoe UI", size=10, weight="bold"),
+            fg_color="#1e293b",
+            hover_color="#334155",
+            text_color=self.c_amber,
+            height=22,
+            width=130,
+            command=lambda: webbrowser.open("https://console.groq.com/keys")
+        ).pack(side="right")
 
         # Initialize masked key status
         self._init_groq_key_display()
